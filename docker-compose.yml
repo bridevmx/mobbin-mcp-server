@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  mobbin-mcp-server:
+    build: .
+    container_name: mobbin-mcp-server
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MOBBIN_API_KEY=${MOBBIN_API_KEY:-}
