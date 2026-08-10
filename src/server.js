@@ -160,7 +160,7 @@ app.post("/messages", async (req, res) => {
     return res.status(404).send("Session not found");
   }
 
-  await session.transport.handlePostMessage(req, res);
+  await session.transport.handlePostMessage(req, res, req.body);
 });
 
 app.listen(PORT, () => {
