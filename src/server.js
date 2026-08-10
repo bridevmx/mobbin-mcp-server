@@ -138,13 +138,23 @@ function getApiKey(req) {
 
 // SSE Endpoint
 app.get("/sse", async (req, res) => {
+  res.setHeader("X-Accel-Buffering", "no");
+  res.setHeader("Cache-Control", "no-cache, no-transform");
+
   const apiKey = getApiKey(req);
   const mcpServer = createMcpServer(apiKey);
   const transport = new SSEServerTransport("/messages", res);
 
   transports.set(transport.sessionId, { transport, mcpServer });
 
+  const pingInterval = setInterval(() => {
+    if (!res.writableEnded) {
+      res.write(": ping\n\n");
+    }
+  }, 15000);
+
   req.on("close", () => {
+    clearInterval(pingInterval);
     transports.delete(transport.sessionId);
   });
 
